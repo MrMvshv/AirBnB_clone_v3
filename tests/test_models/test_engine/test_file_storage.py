@@ -113,3 +113,38 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+class TestAddedMethodsFs(unittest.TestCase):
+    """Test the added get and count methods in file_storage"""
+
+    def setUp(self):
+        """set up an instance to test with"""
+
+        self.obj = State(name="Kanairo")
+
+    def tearDown(self):
+        """delete the test object after @ test"""
+
+        self.obj.delete()
+
+    def test_get(self):
+        """test get method"""
+
+        self.obj.save()
+
+        obj_id = self.obj.id
+        db_obj = models.storage.get(State, obj_id)
+
+        self.assertEqual(obj_id, db_obj.id)
+        self.assertIsinstance(db_obj, State)
+
+    def test_count(self):
+        """test count method"""
+
+        count_1 = models.storage.count(State)
+
+        self.obj.save()
+
+        count_2 = models.storage.count(State)
+
+        self.assertEqual(count_2, count_1 + 1)
